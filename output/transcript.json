@@ -1,0 +1,50 @@
+{
+    "text": "A wife is a woman married to a husband.",
+    "words": [
+        {
+            "start": 80,
+            "end": 192,
+            "word": "A"
+        },
+        {
+            "start": 192,
+            "end": 440,
+            "word": "wife"
+        },
+        {
+            "start": 472,
+            "end": 680,
+            "word": "is"
+        },
+        {
+            "start": 720,
+            "end": 920,
+            "word": "a"
+        },
+        {
+            "start": 960,
+            "end": 1496,
+            "word": "woman"
+        },
+        {
+            "start": 1648,
+            "end": 2104,
+            "word": "married"
+        },
+        {
+            "start": 2152,
+            "end": 2312,
+            "word": "to"
+        },
+        {
+            "start": 2336,
+            "end": 2472,
+            "word": "a"
+        },
+        {
+            "start": 2496,
+            "end": 2680,
+            "word": "husband."
+        }
+    ]
+}
