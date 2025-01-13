@@ -1,8 +1,9 @@
 from video import make_video
 
 def main():
-    prompt = "explain wife in 1 sentence"
-    make_video(prompt)
+    prompt = "explain jobs in 3 sentence"
+    format ="short"
+    make_video(format,prompt)
 
 
 
