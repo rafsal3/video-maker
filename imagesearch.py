@@ -61,7 +61,7 @@ def search_and_save_image_google(keyword, save_folder="output/media/image"):
         image_response = requests.get(image_url)
         if image_response.status_code == 200:
             # Save the image locally
-            file_path = os.path.join(save_folder, f"{keyword.replace(' ', '_')}.jpg")
+            file_path = os.path.join(save_folder, f"{keyword}.jpg")
             with open(file_path, "wb") as f:
                 f.write(image_response.content)
             print(f"Image saved: {file_path}")

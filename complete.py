@@ -66,8 +66,9 @@ def process_keywords_and_save_media(keyword_list_path):
 
 
 def read_script(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
+
 
 
 
@@ -131,7 +132,7 @@ def create_keyword_list_using_gemini(transcript_file_path):
 
 
 # video editor
-def create_video_with_moviepy(format, mapping_file, keywords_file, audio_file, output_file, background_color=(0, 0, 0)):
+def create_video_with_moviepy(format, mapping_file, keywords_file, audio_file, output_file, background_color=(16, 12, 46)):
     try:
         print("Video editing started...")
 
