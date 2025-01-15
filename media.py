@@ -132,16 +132,19 @@ def map_media_to_timestamps_v2(words, media_keywords, audio_duration, media_fold
 
     # Map keywords to their first occurrence in the words list
     for media_item in media_keywords:
+        # Take the first word from the media keyword
+        first_word = media_item["keyword"].split()[0].lower()
+
         for i, word_data in enumerate(words):
-            if media_item["keyword"].lower() in word_data["word"].lower():
+            if first_word in word_data["word"].lower():
                 # Extract start timestamp
                 start_time = word_data["start"] / 1000
 
                 # Construct the media path based on type (image or gif)
                 if media_item["type"] == "image":
-                    media_path = f"{media_folder}/{media_item['keyword']}.jpg"
-                elif media_item["type"] == "giph":
-                    media_path = f"{media_folder}/{media_item['keyword']}.mp4"
+                    media_path = f"{media_folder}/image/{media_item['keyword']}.jpg"
+                elif media_item["type"] == "gif":
+                    media_path = f"{media_folder}/gifs/{media_item['keyword']}.mp4"
                 else:
                     continue  # Skip unsupported types
                 
@@ -172,6 +175,6 @@ def map_media_to_timestamps_v2(words, media_keywords, audio_duration, media_fold
         json.dump(mappings, file, indent=4)
 
     print("Mapping completed and saved to output/mappings.json...")
-    return mappings
+    return "output/mappings.json"
 
 
