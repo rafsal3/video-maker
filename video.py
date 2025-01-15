@@ -56,16 +56,16 @@ def create_video_with_moviepy(format,media_mappings, audio_file, output_file, ba
 
 
 
-def make_video(format,prompt):
-    print("Starting processing...")
-    result_as_json = generate_script(prompt)
-    script = result_as_json["response"]
-    audio_path = generate_audio(script)
-    file_path = generate_transcript(audio_path)
+def make_video(format="long"):
+    # print("Starting processing...")
+    # result_as_json = generate_script(prompt)
+    # script = result_as_json["response"]
+    # audio_path = generate_audio(script)
+    # file_path = generate_transcript(audio_path)
 
 
- 
-  
+    file_path = "output/transcript.json"
+    audio_path = "output/audio.wav"
     text,words = parse_transcript(file_path)
     keywords = extract_keywords(text)
 
@@ -75,12 +75,13 @@ def make_video(format,prompt):
     # Final output video file
     output_file = "output/final_video.mp4"
 
-    for keyword in keywords:
-        saved_image_path = search_and_save_image(keyword)
-        # saved_image_path = search_and_save_GIF(keyword)
-        print(f"Saved Image Path: {saved_image_path}")
+    # for keyword in keywords:
+    #     saved_image_path = search_and_save_image(keyword)
+    #     # saved_image_path = search_and_save_GIF(keyword)
+    #     print(f"Saved Image Path: {saved_image_path}")
 
     mappings = map_media_to_timestamps(words,keywords,audio_duration)
     create_video_with_moviepy(format,mappings,audio_path,output_file,)
 
 
+make_video()

@@ -41,7 +41,7 @@ def extract_keywords(text):
 
 # media search
 
-def search_and_save_image(keyword,save_folder="output/media"):
+def search_and_save_image(keyword,save_folder="output/media/image"):
     try:
         print("Collecting images ...")
         # creaete the folder if that doesnt exist
@@ -121,5 +121,57 @@ def map_media_to_timestamps(words, keywords, audio_duration, media_folder="outpu
     print("Mapping completed...")
     return mappings
 
+
+import json
+
+def map_media_to_timestamps_v2(words, media_keywords, audio_duration, media_folder="output/media"):
+    print("Media collection completed...")
+    print("Mapping media to timestamps started...")
+    
+    mappings = []
+
+    # Map keywords to their first occurrence in the words list
+    for media_item in media_keywords:
+        for i, word_data in enumerate(words):
+            if media_item["keyword"].lower() in word_data["word"].lower():
+                # Extract start timestamp
+                start_time = word_data["start"] / 1000
+
+                # Construct the media path based on type (image or gif)
+                if media_item["type"] == "image":
+                    media_path = f"{media_folder}/{media_item['keyword']}.jpg"
+                elif media_item["type"] == "giph":
+                    media_path = f"{media_folder}/{media_item['keyword']}.mp4"
+                else:
+                    continue  # Skip unsupported types
+                
+                # Add to mappings with placeholder end_time
+                mappings.append({
+                    "keyword": media_item["keyword"],
+                    "start_time": start_time,
+                    "end_time": start_time,  # Placeholder
+                    "media_path": media_path
+                })
+                break  # Stop at the first match
+
+    # Sort mappings by start_time
+    mappings.sort(key=lambda x: x["start_time"])
+
+    # Adjust end times dynamically for each mapping
+    for i in range(len(mappings)):
+        if i < len(mappings) - 1:
+            # Current mapping's end_time is the next mapping's start_time
+            next_start_time = mappings[i + 1]["start_time"]
+            mappings[i]["end_time"] = max(next_start_time, mappings[i]["start_time"] + 0.5)
+        else:
+            # Last mapping's end_time is the audio duration
+            mappings[i]["end_time"] = min(audio_duration, mappings[i]["start_time"] + 1.0)
+
+    # Save the mappings to "output/mappings.json"
+    with open("output/mappings.json", "w") as file:
+        json.dump(mappings, file, indent=4)
+
+    print("Mapping completed and saved to output/mappings.json...")
+    return mappings
 
 
