@@ -12,26 +12,26 @@ import json
 if __name__ == "__main__":
 
     # create script
-    # prompt = input("Enter you prompt")
-    # script_file_path = generate_script(prompt,output_format="text")
-    # script_content = read_script(script_file_path)
+    prompt = input("Enter you prompt")
+    script_file_path = generate_script(prompt,output_format="text")
+    script_content = read_script(script_file_path)
 
     # create audio
-    # audio_file_path = generate_audio(script_content)
-    audio_file_path = "output/audio.wav"
+    audio_file_path = generate_audio(script_content)
+    # audio_file_path = "output/audio.wav"
     audio = AudioFileClip(audio_file_path)
     audio_duration = audio.duration
 
     # create transcript
-    # transcript_file_path = generate_transcript(audio_file_path)
-    transcript_file_path = "output/transcript.json"
+    transcript_file_path = generate_transcript(audio_file_path)
+    # transcript_file_path = "output/transcript.json"
     text,words = parse_transcript(transcript_file_path)
 
     # create keyword list
-    # keyword_list_path = create_keyword_list_using_gemini(transcript_file_path)
-    keyword_list_path = "output/keywords.json"
+    keyword_list_path = create_keyword_list_using_gemini(transcript_file_path)
+    # keyword_list_path = "output/keywords.json"
 
-    # saved_media_map = process_keywords_and_save_media(keyword_list_path)
+    saved_media_map = process_keywords_and_save_media(keyword_list_path)
 
     # loading media keywords
     with open("output/keywords.json", "r") as file:

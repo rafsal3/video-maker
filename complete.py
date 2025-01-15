@@ -19,7 +19,7 @@ def process_keywords_and_save_media(keyword_list_path):
     except Exception as e:
         print(f"Error loading keyword list: {e}")
         return None
-    
+
     saved_media = {}
 
     # Step 2: Process each keyword and save corresponding media
@@ -28,15 +28,27 @@ def process_keywords_and_save_media(keyword_list_path):
         media_type = item["type"].lower()
 
         if media_type == "image":
-            # search and save image
-            # file_path = search_and_save_image(keyword)
+            # Try searching and saving with Google first
             file_path = search_and_save_image_google(keyword)
-            saved_media[keyword] = file_path
+
+            if not file_path:  # If Google doesn't return an image, fall back to the other function
+                print(f"Google search failed for '{keyword}', trying alternative method.")
+                file_path = search_and_save_image(keyword)
+
+            if file_path:
+                saved_media[keyword] = file_path
+            else:
+                print(f"No image found for keyword: {keyword}")
 
         elif media_type == "gif":
-            # search and save GIF
+            # Search and save GIF
             file_path = search_and_save_GIF(keyword)
-            saved_media[keyword] = file_path
+
+            if file_path:
+                saved_media[keyword] = file_path
+            else:
+                print(f"No GIF found for keyword: {keyword}")
+
         else:
             print(f"Unsupported media type '{media_type}' for keyword: {keyword}")
 
