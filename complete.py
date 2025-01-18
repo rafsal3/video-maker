@@ -8,6 +8,8 @@ import json
 import ast
 import os
 from imagesearch import search_and_save_image_google
+import re
+
 
 import json
 
@@ -202,44 +204,89 @@ def create_video_with_moviepy(format, mapping_file, keywords_file, audio_file, o
     except Exception as e:
         print(f"Error during video creation: {e}")
 
-if __name__ == "__main__":
 
 
 
-    # file_path = "output/script.txt"
+def transcript_to_sentences(file_path):
+    """
+    Converts a word-by-word transcript into a sentence-by-sentence transcript.
 
-    script_content = read_script(file_path)
+    Args:
+        file_path (str): The path to the input transcript JSON file.
 
-    # audio_file_path = generate_audio(script_content)
-    # audio_file_path = "output/audio.wav"
+    Returns:
+        str: The path to the output JSON file with sentence-level transcripts.
+    """
+    # Ensure the output directory exists
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Read the transcript JSON file
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    
+    text = data.get("text", "")
+    words = data.get("words", [])
+    
+    # Split the text into sentences using punctuation
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
+    sentence_transcripts = []
+    sentence_start_index = 0
+    
+    # Match sentences with timestamps
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if not sentence:
+            continue
+        
+        sentence_start_time = words[sentence_start_index]["start"]
+        sentence_end_time = None
+        
+        word_count = len(sentence.split())
+        sentence_words = words[sentence_start_index:sentence_start_index + word_count]
+        
+        # Adjust the end timestamp based on the last word in the sentence
+        if sentence_words:
+            sentence_end_time = sentence_words[-1]["end"]
+        
+        sentence_transcripts.append({
+            "sentence": sentence,
+            "start": sentence_start_time,
+            "end": sentence_end_time
+        })
+        
+        sentence_start_index += word_count
+    
+    # Define the output file path
+    output_path = os.path.join(output_dir, "sentence_transcript.json")
+    
+    # Save the sentence-level transcripts to a JSON file
+    with open(output_path, 'w', encoding='utf-8') as json_file:
+        json.dump(sentence_transcripts, json_file, ensure_ascii=False, indent=4)
+    
+    return output_path
 
-    # transcript_file_path = generate_transcript(audio_file_path)
 
-    # Example transcript text
-    # transcript_text = "In today's top story, a man is jumping over a car while flying in the sky."
-    transcript_file_path = "output/transcript.json"
-    keyword_list_path = "output/keywords.json"
-    file_path = "output/transcript.json"
-    audio_path = "output/audio.wav"
-    video_format = "long"
+def script_to_sentences(file_path):
 
-    audio = AudioFileClip(audio_path)
-    audio_duration = audio.duration
+    # Ensure the output directory exists
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
 
-    text,words = parse_transcript(file_path)
-    keyword_list_path = create_keyword_list_using_gemini(transcript_file_path)
-    saved_media_map = process_keywords_and_save_media(keyword_list_path)
-    # Load the media keywords from the JSON file
-    with open("output/keywords.json", "r") as file:
-        media_keywords = json.load(file)
+    # Read the input file
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
 
-    mappings = map_media_to_timestamps_v2(words, media_keywords, audio_duration)
-    mapping_file = "output/mappings.json"
-    create_video_with_moviepy(
-    format=video_format,
-    mapping_file=mapping_file,
-    keywords_file=keyword_list_path,
-    audio_file=audio_path,
-    output_file="output/final.mp4",
+    # Split the content into sentences based on punctuation (?, !, ., ", ,, etc.)
+    sentences = re.split(r'(?<=[.!?\"\,])\s+', content)
+    sentences = [sentence.strip() for sentence in sentences if sentence.strip()]  # Remove empty sentences
 
-)
+    # Define the output file path
+    output_path = os.path.join(output_dir, "sentence.json")
+
+    # Save sentences to a JSON file
+    with open(output_path, 'w', encoding='utf-8') as json_file:
+        json.dump(sentences, json_file, ensure_ascii=False, indent=4)
+
+    return output_path
